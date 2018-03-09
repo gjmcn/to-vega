@@ -1,0 +1,19 @@
+{
+  "name": "to-vega",
+  "version": "0.1.0",
+  "description": "Simple JavaScript library for creating Vega-Lite specifications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gjmcn/to-vega.git"
+  },
+  "author": "Graham McNeill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gjmcn/to-vega/issues"
+  },
+  "homepage": "https://github.com/gjmcn/to-vega#readme"
+}
