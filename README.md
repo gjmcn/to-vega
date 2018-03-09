@@ -1,68 +1,48 @@
 # To-Vega
 
+
+# CHANGES (or at least, planned changes)!!
+
+-MARK ADDS OBJECT {} - IF COMPOSING
+-LAYER, H/RCONCAT OPEN LEVEL
+-.END CLOSES LEVEL
+-ALL METHODS SET ON CURRENT LEVEL TO CURRENT LEVEL
+-no checking noew if have set mark before enc etc
+-no spec until ask for it - prob not that difficult but for now
+only construct stack when ask for it?
+
+
+
+
 **To-Vega** is a simple JavaScript library for creating [Vega-Lite](https://vega.github.io/vega-lite/) specifications. For example:
 
 ```js
-tv('data/cars.json').point().x('Horsepower').y('Miles_per_Gallon').sp
+tv('pets.json').point().x('cat').y('dog').sp
 ```
 
-returns the JavaScript object:
+returns the object:
 
 ```js
 {
   '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-  data: { url: 'data/cars.json' },
+  data: { url: 'pets.json' },
   mark: 'point',
   encoding: {
-    x: { field: 'Horsepower', type: 'quantitative' },
-    y: { field: 'Miles_per_Gallon', type: 'quantitative' }
+    x: { field: 'cat', type: 'quantitative' },
+    y: { field: 'dog', type: 'quantitative' }
   }
 }
 ```
 
-A more complex example:
+To-Vega makes it particularly easy to genereate a spec and set commonly used properties. More advanced options can also be set with To-Vega or alternatively, standard JavaScript can be used.
+
+Typically, it is easy to add a `plot` method to the library (the details depend on the context) allowing for code such as:
 
 ```js
-tv('data/stocks.csv')
-  .layer()
-    .line()
-      .x('date','t')
-      .y('price')
-      .color('symbol','n')
-    .rule()
-      .y('price','q',{aggregate: 'mean'})
-      .size({value:2})
-      .color('symbol','n').sp
+tv('pets.json').point().x('cat').y('dog').plot()
 ```
 
-returns:
-
-```js
-{
-  '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
-  data: { url: 'data/stocks.csv' },
-  layer: [
-    {
-      mark: 'line',
-      encoding: {
-        x: { field: 'date', type: 'temporal' },
-        y: { field: 'price', type: 'quantitative' },
-        color: { field: 'symbol', type: 'nominal' }
-      }
-    },
-    {
-      mark: 'rule',
-      encoding: {
-        y: { field: 'price', type: 'quantitative', aggregate: 'mean' },
-        size: { field: { value: 2 }, type: 'quantitative' },
-        color: { field: 'symbol', type: 'nominal' }
-      }
-    }
-  ]
-}
-```
-
-To-Vega makes it particularly easy to genereate a spec and set commonly-used properties. More advanced options can also be set with To-Vega or standard JavaScript can be used.
+See !!!!!!!!!!OBSERVABLE LINK!!!!!!!! for a hands-on introduction.
 
 ## Install/Load
 
@@ -121,9 +101,32 @@ Furthermore, compose methods (including `spec`) throw an error if a mark or chan
 
 These methods set the 'current' mark property &mdash; see the compose methods for details. Mark methods take no arguments.
 
+There is also a generic `mark` method. For example, `tv.mark('bar')` is equivalent to `tv.bar()`.
+
+
 ### Channels
 
-Call merk before enc
+ `x` `y` `x2` `y2` `color` `opacity` `size` `shape` `text` `tooltip` `href` `order` `detail` `row` `column`
+
+These methods set properties of the 'current' encoding object &mdash; see the compose methods for details. A channel method can take up to 3 arguments:
+
+`tv.x(field, type, ops)`
+
+* `field`: field property; no field property is added if this is falsy
+
+* `type`: type property;
+	* `'n'`, `'o'`, `'q'`, or `'t'` can be passed instead of `'nominal'`, `'ordinal'`, `'quantitative'` or `'temporal'` respectively
+	* `'q'` is used by default if `field` is truthy
+	* no field property is added if `field` and `type` are both falsy
+
+* `ops`: object with any other properties to set, e.g.
+`{aggregate: 'sum', axis: {title: 'population}, stack: normalize}`
+
+
+Channel methods throw an error if no mark method has been called.
+
+There is also a generic `channel` method. For example, `tv.bar().channel('x','q',ops)` is equivalent to `tv.bar().x('q',ops)`.
+
 
 ###Plot
 

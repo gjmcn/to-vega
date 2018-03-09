@@ -5,12 +5,13 @@ var tv;
 {
   
   let tv_new = function(data) {  
-    this._obj  = {};
-    this._objList = [this._obj];
-    this._actList = ['top'];
-    this._depth = 0;
     this.sp = {$schema: 'https://vega.github.io/schema/vega-lite/v2.json'};
-    if (data) this._data(data);
+    if (typeof data === 'string') this.sp.data = {url: data};
+    else if (data) this.sp.data = {values: data};
+    this._markObj = this.sp;
+    this._compose = false;
+    this._mark = false;
+    this._enc = false;
   };
 
   let typeLookup = {
@@ -28,8 +29,6 @@ var tv;
     return t;
   };
 
-  let level = a => ['layer','hconcat','vconcat'].indexOf(a) >= 0;
-  
   let simpleProps = ['description','title','width','height','name','transform',
     '$schema','background','padding','autosize','config','selection','facet','repeat'];
   let composeProps = ['layer','spec','hconcat','vconcat'];
@@ -42,56 +41,45 @@ var tv;
 
   //top-level properties
   simpleProps.map(a => proto[a] = function(x) {
-    this._obj [a] = x;
+    this.sp[a] = x;
     return this;
   });
   proto.data = function(d) {
-    this._obj .data = (typeof d === 'string' ? {url: d} : {values: d});
+    this.sp.data = (typeof d === 'string' ? {url: d} : d);
     return this;
   };
   ['across','down'].map(direc => proto[direc] = function(flds) {
-    this._obj .repeat = this._obj .repeat || {};
-    this._obj .repeat[direc === 'across' ? 'column' : 'row'] = flds;
+    this.sp.repeat = this.sp.repeat || {};
+    this.sp.repeat[direc === 'across' ? 'column' : 'row'] = flds;
     return this;
   });
   proto.desc = function(d) { return this.description(d) };
   proto.projection = function(ops) {
-    this._obj .projection = (typeof ops === 'string' ? {type: ops} : ops);
+    this.sp.projection = (typeof ops === 'string' ? {type: ops} : ops);
     return this;
   };
   proto.proj = function(ops) { return this.projection(ops) };
   proto.prop = function(p,x) {
-    this._obj [p] = x;
+    this.sp[p] = x;
     return this;
   }
     
   //compose
   composeProps.map(a => proto[a] = function() {
-    if (a === 'spec') {
-      this._obj = {};
-      this._objList.push(this._obj);
-    }
-    this._actList.push(a);
-    this._depth++;
+    if (this._mark || this._enc) throw new Error('call ' + a + ' before any mark or encoding functions');
+    if (this._compose) throw new Error('a compose function has already been called');
+    if (a === 'spec') this.sp.spec = this._markObj = {};
+    else this.sp[a] = [];
+    this._compose = a;
     return this;
   });
-  
+
   //marks
   markProps.map(a => proto[a] = function() {
-    let isLevel = level(this._actList.slice(-1)[0]);
-    if (!isLevel) {
-      throw new Error('must be in layer, vconcat, or hconcat to use multiple marks');
+    if (this._mark && (!this._compose || this._compose === 'spec')) {
+      throw new Error('call an appropriate compose function to use multiple marks');
     }
-    if (level) {
-      !!!!!!!!!!!!HERE: PUSH TO ACTLIST LIST, SET OBJ TO {}, PUSH TO OBJLIST
-    }
-    
-???????SHOULD HAVE FUNC TO UPDATE STATE? - ADD TO ACTLIST, NEW OBJ, PUSH TO OBJLIST    
-
-USE .sp for opening level and eg res() for get spec from function
-      
-      
-      
+    if (this._compose && this._compose !== 'spec') {
       this._markObj = {};
       this.sp[this._compose].push(this._markObj);
     }
@@ -134,8 +122,6 @@ USE .sp for opening level and eg res() for get spec from function
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = tv;
 }
-
-WRITE  spec() and end()
 
 
 
