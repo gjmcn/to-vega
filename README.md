@@ -1,19 +1,5 @@
 # To-Vega
 
-
-# CHANGES (or at least, planned changes)!!
-
--MARK ADDS OBJECT {} - IF COMPOSING
--LAYER, H/RCONCAT OPEN LEVEL
--.END CLOSES LEVEL
--ALL METHODS SET ON CURRENT LEVEL TO CURRENT LEVEL
--no checking noew if have set mark before enc etc
--no spec until ask for it - prob not that difficult but for now
-only construct stack when ask for it?
-
-
-
-
 **To-Vega** is a simple JavaScript library for creating [Vega-Lite](https://vega.github.io/vega-lite/) specifications. For example:
 
 ```js
@@ -51,21 +37,23 @@ To-Vega is a Node.js module:
 * install: `npm --save install to-vega`.
 * load: `let tv = require('to-vega')`
 
-To use To-Vega in a browser, use Browserify or load `index.js` in a `<script>` tag. When `<script>` is used, a global variable `tv` is created.
+To use To-Vega in a browser, use e.g. Browserify or load `index.js` in a `<script>` tag. When `<script>` is used, a global variable `tv` is created.
 
 ## Usage
 
-### Create a Spec
+### Creating a Spec
 
 Assuming To-Vega has been loaded as above, create a spec with `tv(data)`. If `data` is a string, it is used as the `data.url` property of the spec, otherwise it is used as the `data.values` property. If `data` is omitted, no data property is added to the spec.
 
 `tv` returns a To-Vega object; the `sp` property of the object contains the actual spec.
 
-### Methods
+When writing a spec in JSON, we can think of the object that we are currently adding properties to as the 'currrent object' &mdash; our current location in the spec. Creating specs with To-Vega is similar to writing JSON (but with much less boilerplate) and this idea of the 'current object' is useful. Note that the current object is the top-level object unless `hconcat`, `vconcat`, `level` or `spec` have been used (these are described below).
+
+## Methods
 
 ### Basic
 
-The following methods set the corresponding top-level property of the spec:
+The following methods set the corresponding property of the current object:
 
 `description` `title` `width` `height` `name` `transform` `$schema` `background` `padding` `autosize` `config` `selection` `facet` `repeat`
 
@@ -73,42 +61,49 @@ E.g. `tv.width(300)` or `tv.selection({brush: {type: 'interval'}})`
 
 The following methods have slightly more complex behavior:
 
-* `across`, `down`: set the column and row property respectively of repeat; the top-level repeat property is created if necessary
+* `across`, `down`: set the column and row property respectively of the repeat property of the current object; the repeat property is created if it does not exist
 
-* `data`: sets the top-level data property; interprets its argument in the same way as `tv` &mdash; `tv` is typically used to set the data property
+* `data`: set the data property of the current object; interprets its argument in the same way as `tv`
 
-* `projection`, `proj`: set the top-level projection property to the argument unless it is a string, in which case the projection property is set to `{type: theString}`
+* `projection`, `proj`: set the projection property of the current object: if passed a string, the projection property is set to `{type: theString}`, otherwise the projection property is set to the argument
 
-* `prop`: set a top level property, e.g. `tv.prop('width',300)` is equivalent to `tv.width(300)`; the property name need not appear in the above list
+* `desc`: set the description property of the current object
 
-* `desc`: shorthand for `description`
+* `prop`: set a property of the current object, e.g. `.prop('width',300)` is equivalent to `.width(300)`; the property name need not appear in the above list
 
 
 ### Compose
 
 `hconcat` `vconcat` `level`
 
-These methods create a top-level property of the same name and assign an empty array to it mdash; these methods do not take an argument. When a mark method is called (see below), a new object is pushed onto the array; this object has a mark property (set to the appropriate value) and an encoding property set to an empty object. Channel methods (see below) set properties of the most recently added encoding object.
+These methods take no argument; they add a property of the same name to the current object and assign an empty array to it. At this point, there is no current object so we typically call a mark method or `add` to add an object to the array; the added object becomes the current object.
 
-The `spec` method (no arguments) creates a top-level spec object &mdash; not an array. Mark and channel methods can are used to set properties of the object. When no compose method is used, mark methods set the top-level mark property; channel methods set properties of the top-level encoding object.
+The `spec` method (no arguments) adds a spec property to the current object; the property is an empty object which becomes the current object.
 
-Only a single mark method can be used unless `hconcat`, `vconcat` or `level` is used.
-Furthermore, compose methods (including `spec`) throw an error if a mark or channel method has already been called.
+Call `.end` to exit an array or object:
+
+* if inside a 'composition array' (created by `hconcat`, `vconcat` or `level`), `end` closes the current object  if there is one (i.e. the array entry created by a mark method or `add`) and closes the array
+
+* if inside an object created with `spec` spec property, `end` closes the object
+
+* otherwise, `end` throws an error
+
 
 ### Marks
 
 `area` `bar` `circle` `line` `point` `rect` `rule`  `square` `text`  `tick` `geoshape`
 
-These methods set the 'current' mark property &mdash; see the compose methods for details. Mark methods take no arguments.
+If the current object is the top level object or an object created by `spec`, mark methods add a mark property and set it to the name of the method.
 
-There is also a generic `mark` method. For example, `tv.mark('bar')` is equivalent to `tv.bar()`.
+Inside a composition array, mark objects add a new object to the array, set this to the current object and add (and set) a mark property. Use `add` inside a composition array to add an empty object (no mark property) to the array.
 
+Mark methods take no arguments. The exception is the generic `mark` method &mdash e.g. `.mark('bar')` is equivalent to `.bar()`.
 
 ### Channels
 
  `x` `y` `x2` `y2` `color` `opacity` `size` `shape` `text` `tooltip` `href` `order` `detail` `row` `column`
 
-These methods set properties of the 'current' encoding object &mdash; see the compose methods for details. A channel method can take up to 3 arguments:
+These methods set properties of the encoding property of the current object &mdash; the encoding property is added if it does not exist. A channel method can take up to 3 arguments:
 
 `tv.x(field, type, ops)`
 
@@ -122,28 +117,7 @@ These methods set properties of the 'current' encoding object &mdash; see the co
 * `ops`: object with any other properties to set, e.g.
 `{aggregate: 'sum', axis: {title: 'population}, stack: normalize}`
 
-
-Channel methods throw an error if no mark method has been called.
-
-There is also a generic `channel` method. For example, `tv.bar().channel('x','q',ops)` is equivalent to `tv.bar().x('q',ops)`.
-
-
-###Plot
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+There is also a generic `channel` method. For example, `.channel('x','q',ops)` is equivalent to `.x('q',ops)`.
 
 
 

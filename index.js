@@ -5,21 +5,19 @@ var tv;
 {
   
   let tv_new = function(data) {  
-    this._obj  = {};
-    this._objList = [this._obj];
-    this._actList = ['top'];
-    this._depth = 0;
+    this._sp = {};
+    this._obj = this._sp;           //current object
+    this._specStack = [this._obj];  //object stack for spec objects
+    this._level = false;            //current level
+    this._levelStack = [];          //array stack for levels (layer, hconcat, vconcat)
+    this._actionStack = [];         //entries are 'spec' or 'level'
+    this._depth = 0;                //current depth - spec and level add to depth
+    //this._isLevel = false;          //true if most recently opened level rather than spec
     this.sp = {$schema: 'https://vega.github.io/schema/vega-lite/v2.json'};
     if (data) this._data(data);
   };
 
-  let typeLookup = {
-    n: 'nominal',
-    o: 'ordinal',
-    q: 'quantitative',
-    t: 'temporal'
-  };
-
+  let typeLookup = { n:'nominal', o:'ordinal', q:'quantitative', t:'temporal' };
   let expandType = t => {
     t = '' + t;
     if (t.length !== 1) return t;
@@ -28,7 +26,7 @@ var tv;
     return t;
   };
 
-  let level = a => ['layer','hconcat','vconcat'].indexOf(a) >= 0;
+  //let level = a => ['layer','hconcat','vconcat'].indexOf(a) >= 0;
   
   let simpleProps = ['description','title','width','height','name','transform',
     '$schema','background','padding','autosize','config','selection','facet','repeat'];
@@ -42,7 +40,7 @@ var tv;
 
   //top-level properties
   simpleProps.map(a => proto[a] = function(x) {
-    this._obj [a] = x;
+    this._obj[a] = x;
     return this;
   });
   proto.data = function(d) {
@@ -68,36 +66,57 @@ var tv;
   //compose
   composeProps.map(a => proto[a] = function() {
     if (a === 'spec') {
-      this._obj = {};
-      this._objList.push(this._obj);
+      this._obj.spec = {};
+      this._obj = this._obj.spec;
+      this._specStack.push(this._obj);
+      this._level = false;
+      this._actionStack.push('spec');  
     }
-    this._actList.push(a);
+    else {
+      this._obj = undefined;
+      this._level = [];
+      
+      !!!!!!!!!!!!!!!HEREE!!!!!!!!!!!!!!!!!!!!
+      REMEMBER TO CHECK UF THERE IS EVEN AN OBJ ADDED TO THE CURRENT LEVEL WHERE APPROP
+        -OR IS IT BETTER TO AUTO ADD FIRST OBJ? - THEN NEED TO BE AWARE IF HAVE USED MARK - I THINK THIS IS BETTER
+          -CHANGE DOCS IF GO WITH THIS!!!!!!!!!!!!!!
+      
+      
+      
+      this._levelStack.push(this._level);
+      this._actionStack.push('level');
+    }
     this._depth++;
     return this;
   });
   
+  //next - THIS SHOULD BE ADD????
+  proto.next = function() {
+    if (!this._level) {
+      throw new Error('Can only use next inside a level (layer, hconcat or vconcat)');
+    }
+    this._obj = {};
+    this._level.push(this._obj);
+  };
+  
+  //end
+  proto.end = function() {
+    if (this._depth === 0) throw new Error('already at top-level');
+    if (this._level) {
+      HOW KNOW IF SPEC OR LEVEL?
+    }
+    else {
+      
+    }
+    this._depth--;
+  };
+  
+
   //marks
   markProps.map(a => proto[a] = function() {
-    let isLevel = level(this._actList.slice(-1)[0]);
-    if (!isLevel) {
-      throw new Error('must be in layer, vconcat, or hconcat to use multiple marks');
-    }
-    if (level) {
-      !!!!!!!!!!!!HERE: PUSH TO ACTLIST LIST, SET OBJ TO {}, PUSH TO OBJLIST
-    }
-    
-???????SHOULD HAVE FUNC TO UPDATE STATE? - ADD TO ACTLIST, NEW OBJ, PUSH TO OBJLIST    
-
-USE .sp for opening level and eg res() for get spec from function
-      
-      
-      
-      this._markObj = {};
-      this.sp[this._compose].push(this._markObj);
-    }
+    if (this._level) this._next();
     this._markObj.mark = a;
     this._markObj.encoding = {};
-    this._mark = true;
     return this;
   });
   proto.mark = function(m) {
@@ -135,8 +154,13 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = tv;
 }
 
-WRITE  spec() and end()
+WRITE end() next() - to add new obj when not a mark
 
+mark ops can open a new level with truthy arg, eg circle(1) - not nec since should do if in level, otherwise not allowed
+
+
+DOCUMENT, ALWAYS ENTER NEW OBJECT WHEN ENTER LEVEL, SPEC
+  -WHEN USE OR MARK?
 
 
 // TO DO:
