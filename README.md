@@ -142,3 +142,9 @@ There is also a generic `channel` method. For example, `.channel('x','dogs','q',
 ## Contributions
 
 Are welcome!
+
+## Also See
+
+* [Altair](https://github.com/ellisonbg/altair]) &mdash; Python
+* [VegaLite.jl](https://github.com/fredo-dedup/VegaLite.jl) &mdash; Julia
+
