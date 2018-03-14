@@ -20,22 +20,22 @@ returns the object:
 }
 ```
 
-To-Vega makes it particularly easy to genereate a spec and set commonly used properties. More advanced options can also be set with To-Vega or alternatively, standard JavaScript can be used.
-
-Typically, it is easy to add a `plot` method to the library (the details depend on the context) allowing for code such as:
+Typically, it is easy to add a suitable `plot` method to the library (the details depend on the context) allowing for code such as:
 
 ```js
 tv('pets.json').point().x('cat').y('dog').plot()
 ```
 
-See !!!!!!!!!!OBSERVABLE LINK!!!!!!!! for a hands-on introduction.
+To-Vega makes it easy to generate a spec and set commonly used properties. More advanced options can also be set with To-Vega or alternatively, standard JavaScript can be used.
+
+See !!OBSERVABLE LINK HERE WHEN DONE!! for a hands-on introduction.
 
 ## Install/Load
 
 To-Vega is a Node.js module:
 
 * install: `npm --save install to-vega`.
-* load: `let tv = require('to-vega')`
+* load: `const tv = require('to-vega')`
 
 To use To-Vega in a browser, use e.g. Browserify or load `index.js` in a `<script>` tag. When `<script>` is used, a global variable `tv` is created.
 
@@ -47,7 +47,8 @@ Assuming To-Vega has been loaded as above, create a spec with `tv(data)`. If `da
 
 `tv` returns a To-Vega object; the `spec` property of the object contains the actual spec.
 
-When writing a spec in JSON, we can think of the object that we are currently adding properties to as the 'current object' &mdash; our current location in the spec. Creating specs with To-Vega is similar to writing JSON (but with much less boilerplate) and this idea of the 'current object' is useful. Note that the current object is the top-level object unless `hconcat`, `vconcat`, `level` or `open` have been used (these are described below).
+In the docs below, the term 'current object' refers to the object that we are currently adding properties to &mdash; our current location in the spec. When a spec is first created, the top-level object is the current object.
+
 
 ## Methods
 
@@ -57,11 +58,11 @@ The following methods set the corresponding property of the current object:
 
 `description` `title` `width` `height` `name` `transform` `$schema` `background` `padding` `autosize` `config` `selection` `facet` `repeat`
 
-E.g. `tv.width(300)` or `tv.selection({brush: {type: 'interval'}})`
+E.g. `tv().width(300)` or `tv().selection({brush: {type: 'interval'}})`
 
 The following methods have slightly more complex behavior:
 
-* `data` sets the data property of the current object; interprets its argument in the same way as `tv`
+* `data` sets the data property of the current object; `data` interprets its argument in the same way as `tv`
 
 * `projection` and `proj` set the projection property of the current object: if passed a string, the projection property is set to `{type: theString}`, otherwise the projection property is set to the argument
 
@@ -69,7 +70,7 @@ The following methods have slightly more complex behavior:
 	* the repeat property is created if it does not exist
 	* pass field names as separate arguments to `across` and `down` (use spread syntax to pass an array, e.g. `.down(...theArray)`)
 
-* `desc` is alias for `description`
+* `desc` is an alias for `description`
 
 * `prop` sets a property of the current object, e.g. `.prop('width',300)` is equivalent to `.width(300)`
 
@@ -77,9 +78,9 @@ The following methods have slightly more complex behavior:
 
 `hconcat` `vconcat` `level`
 
-These methods set the property of the same name (on the current object) to an array, add an empty object to the array and make this the current object.
+These methods set the property of the same name (on the current object) to an array, add an empty object to the array and make it the current object.
 
-The `open` method is similar, but does not add an array: `open` sets the spec property (of the current object) to an empty object and makes this the current object.
+The `open` method is similar, but does not add an array: `open` sets the spec property (of the current object) to an empty object and makes it the current object.
 
 `hconcat`, `vconcat`, `level` and `open` take no arguments.
 
@@ -114,7 +115,7 @@ These methods set properties of the encoding property of the current object &mda
 
 * `field`: field property; no field property is added if this is falsy
 
-* `type`: type property;
+* `type`: type property
 	* `'n'`, `'o'`, `'q'`, or `'t'` can be passed instead of `'nominal'`, `'ordinal'`, `'quantitative'` or `'temporal'` respectively
 	* `'q'` is used by default if `field` is truthy
 	* no type property is added if `field` and `type` are both falsy
@@ -122,7 +123,22 @@ These methods set properties of the encoding property of the current object &mda
 * `ops`: object with any other properties to set, e.g.
 `{aggregate: 'sum', axis: {title: 'population}, stack: normalize}`
 
-There is also a generic `channel` method. For example, `.channel('x','q',ops)` is equivalent to `.x('q',ops)`.
+There is also a generic `channel` method. For example, `.channel('x','dogs','q',ops)` is equivalent to `.x('dogs','q',ops)`.
 
+### Other
 
+`json` returns the spec as a JSON string.
 
+## Notes
+
+* the `_obj` and `_stack` properties of a To-Vega object are the current object and stack respectively; do not modify these directly
+
+* the `spec` property is the 'live' spec; if you modify the spec directly, do not use To-Vega methods to modify it further
+
+* the third argument to a channel method is shallow copied; other methods do not copy objects before adding them to the spec
+
+* `instanceof` will not work on To-Vega objects
+
+##Contributions
+
+Are welcome!

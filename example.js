@@ -1,16 +1,15 @@
 
-
-const tv = require('to-vega')
-const util = require('util')
+//print object to full depth
+const util = require('util');
 const prt = a =>
   console.log(util.inspect(a, {showHidden: false, depth: null}));
 
-let s = tv('myData.json')
-  .layer()
-    .bar().x('a').y('b','n')
-    .line().x('a').y('c',undefined,{aggregate: 'sum'})
-    .end()
-  .desc('my plot')
-  .down(...['d','e'])
-  
-prt(s.spec)
+const tv = require('to-vega');
+
+let s = tv('data/stocks.csv')
+  .line()
+    .x('date', 't', {axis: {'format': '%Y'}})
+    .y('price')
+    .color('symbol', 'n')
+
+prt(s.spec);
