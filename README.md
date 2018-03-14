@@ -139,6 +139,6 @@ There is also a generic `channel` method. For example, `.channel('x','dogs','q',
 
 * `instanceof` will not work on To-Vega objects
 
-##Contributions
+## Contributions
 
 Are welcome!
