@@ -145,6 +145,6 @@ Are welcome!
 
 ## Also See
 
-* [Altair](https://github.com/ellisonbg/altair]) &mdash; Python
+* [Altair](https://github.com/ellisonbg/altair) &mdash; Python
 * [VegaLite.jl](https://github.com/fredo-dedup/VegaLite.jl) &mdash; Julia
 
