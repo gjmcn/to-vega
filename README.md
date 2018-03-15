@@ -28,7 +28,7 @@ tv('pets.json').point().x('cat').y('dog').plot()
 
 To-Vega makes it easy to generate a spec and set commonly used properties. More advanced options can also be set with To-Vega or alternatively, standard JavaScript can be used.
 
-See !!OBSERVABLE LINK HERE WHEN DONE!! for a hands-on introduction.
+See this [Observable notebook](https://beta.observablehq.com/@gjmcn/plotting-with-to-vega-and-vega-lite) for some interactive examples.
 
 ## Install/Load
 
