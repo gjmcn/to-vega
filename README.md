@@ -129,6 +129,19 @@ There is also a generic `channel` method. For example, `.channel('x','dogs','q',
 
 `json` returns the spec as a JSON string.
 
+`setPlot` sets the `plot` method. For example, if the function `vegalite` plots a Vega-Lite spec, we could write:
+
+```js
+tv.setPlot(function() {vegalite(this.spec)})
+```
+then write code such as:
+
+```js
+tv('pets.json').point().x('cat').y('dog').plot()
+```
+
+`setPlot` must be used to set the `plot` method; setting `plot` directly (e.g. `tv.prototype.plot = someFunction`) will not work.
+
 ## Notes
 
 * the `_obj` and `_stack` properties of a To-Vega object are the current object and stack respectively; do not modify these directly

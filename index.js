@@ -128,7 +128,11 @@ let tv;
 
   //JSON
   proto.json = function() { return JSON.stringify(this.spec) };
-
+  
+  //plot
+  proto.plot = function(...arg) { return this.plotFunc(...arg) };
+  tv.setPlot = f => proto.plotFunc = f;  
+    
   //export
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = tv;
