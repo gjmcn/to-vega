@@ -32,7 +32,7 @@ let tv;
     compose: ['layer','hconcat','vconcat'],
     mark: ['area','bar','circle','line','point','rect','rule', 'square','text',
       'tick','geoshape'],
-    channel: ['x','y','x2','y2','color','opacity','size','shape','text',
+    channel: ['x','y','x2','y2','color','opacity','size','shape','label',
       'tooltip','href','order','detail','row','column']
   };
 
@@ -87,15 +87,18 @@ let tv;
   };
 
   //marks
-  props.mark.forEach(a => proto[a] = function() {
+  props.mark.forEach(a => proto[a] = function(ops) {
     if (Array.isArray(last(this._stack)) && this._obj.mark) {
       this._obj = {};
       last(this._stack).push(this._obj);
     }
-    this._obj.mark = a;
+    this._obj.mark = (typeof ops === 'object' ? {...{type: a}, ...ops} : a);
     return this;
   });
-  proto.mark = function(m) { return this[m]() };
+  proto.mark = function(m,ops) { 
+    if (props.mark.indexOf(m) === -1) throw new Error ('invalid mark');
+    return this[m](ops);
+  };
 
   //end
   proto.end = function() {
@@ -119,10 +122,11 @@ let tv;
     else if (typ) channel.type = expandType(typ);  //if field omitted, no default type
     if (typeof ops === 'object') channel = {...channel, ...ops};
     if (!this._obj.encoding) this._obj.encoding = {};
-    this._obj.encoding[a] = channel;
+    this._obj.encoding[a === 'label' ? 'text' : a] = channel;
     return this;
   });
   proto.channel = function(chn, fld, typ, ops) {
+    if (props.channel.indexOf(chn) === -1) throw new Error ('invalid channel');
     return this[chn](fld, typ, ops);
   };
 

@@ -56,7 +56,7 @@ In the docs below, the term 'current object' refers to the object that we are cu
 
 The following methods set the corresponding property of the current object:
 
-`description` `title` `width` `height` `name` `transform` `$schema` `background` `padding` `autosize` `config` `selection` `facet` `repeat`
+`description`, `title`, `width`, `height`, `name`, `transform`, `$schema`, `background`, `padding`, `autosize`, `config`, `selection`, `facet`, `repeat`
 
 E.g. `tv().width(300)` or `tv().selection({brush: {type: 'interval'}})`
 
@@ -76,7 +76,7 @@ The following methods have slightly more complex behavior:
 
 ### Compose
 
-`hconcat` `vconcat` `level`
+`hconcat`, `vconcat`, `level`
 
 These methods set the property of the same name (on the current object) to an array, add an empty object to the array and make it the current object.
 
@@ -95,21 +95,27 @@ Call `.end` to exit an array or object:
 
 ### Marks
 
-`area` `bar` `circle` `line` `point` `rect` `rule`  `square` `text`  `tick` `geoshape`
+`area`, `bar`, `circle`, `line`, `point`, `rect`, `rule`, `square`, `text`, `tick`, `geoshape`
 
-If the current object is the top-level object or an inner spec object (created with `open`), mark methods set the mark property to the name of the method.
+If the current object is the top-level object or an inner spec object (created with `open`), mark methods set the mark property.
 
 Inside a composition array, mark methods set the mark property if it does not exist (or is falsy). However, if the mark property already exists (and is truthy), mark methods add a new object to the composition array, make this the current object and set its mark property.
 
-Use `add` inside a composition array to add an empty object and make it the current object (but not set its mark property).
+If a mark method is passed an object, the object is used as the value of the relevant mark property. The passed object need not have a type property; the name of the mark method is used by default. If a mark method is not passed an object, the relevant mark property is set to the name of the mark method.
 
-Mark methods and `add` take no arguments. The exception is the generic `mark` method:  `.mark('bar')` is equivalent to `.bar()`.
+`mark` is a generic method, e.g. `.mark('bar', ops)` is equivalent to `.bar(ops)`.
+
+Use `add` inside a composition array to add an empty object and make it the current object (but not set its mark property). `add` takes no arguments.
 
 ### Channels
 
- `x` `y` `x2` `y2` `color` `opacity` `size` `shape` `text` `tooltip` `href` `order` `detail` `row` `column`
+ `x`, `y`, `x2`, `y2`, `color`, `opacity`, `size`, `shape`, `label`, `tooltip`, `href`, `order`, `detail`, `row`, `column`
 
-These methods set properties of the encoding property of the current object &mdash; the encoding property is added if it does not exist (or is falsy). A channel method can take up to 3 arguments:
+These methods set properties (channels) of the encoding property of the current object &mdash; the encoding property is added if it does not exist (or is falsy).
+
+Note: `label` actually sets the text channel (recall that `text` is a mark method).
+
+A channel method can take up to 3 arguments:
 
 `tv.x(field, type, ops)`
 
@@ -148,7 +154,7 @@ tv('pets.json').point().x('cat').y('dog').plot()
 
 * the `spec` property is the 'live' spec; if you modify the spec directly, do not use To-Vega methods to modify it further
 
-* the third argument to a channel method is shallow copied; other methods do not copy objects before adding them to the spec
+* the argument of a mark method and the third argument of a channel method are shallow copied; other methods do not copy objects before adding them to the spec
 
 * `instanceof` will not work on To-Vega objects
 
