@@ -32,23 +32,21 @@ See this [Observable notebook](https://beta.observablehq.com/@gjmcn/plotting-wit
 
 ## Install/Load
 
-To-Vega is a Node.js module:
+To-Vega uses the Universal Module Definition (UMD) so should work in any JavaScript environment. For example:
 
-* install: `npm --save install to-vega`.
-* load: `const tv = require('to-vega')`
+* Node.js:
+	* install: `npm --save install to-vega`
+	* load: `const tv = require('to-vega')`
 
-To use To-Vega in a browser, use e.g. Browserify or load `index.js` in a `<script>` tag. When `<script>` is used, a global variable `tv` is created.
+* Browser, using `<script>`: creates a global variable `tv`
 
 ## Usage
 
-### Creating a Spec
+Assuming To-Vega has been loaded as above, create a spec with `tv(data)`. If `data` is a string, it is used as the `data.url` property of the spec, otherwise it is used as the `data.values` property. If `data` is omitted, `tv` does not add a data property to the spec.
 
-Assuming To-Vega has been loaded as above, create a spec with `tv(data)`. If `data` is a string, it is used as the `data.url` property of the spec, otherwise it is used as the `data.values` property. If `data` is omitted, no data property is added to the spec.
-
-`tv` returns a To-Vega object; the `spec` property of the object contains the actual spec.
+`tv` returns a To-Vega object. The methods of a To-Vega object return the same object which allows methods to be chained.  The `spec` property of a To-Vega object contains the actual spec.
 
 In the docs below, the term 'current object' refers to the object that we are currently adding properties to &mdash; our current location in the spec. When a spec is first created, the top-level object is the current object.
-
 
 ## Methods
 
@@ -160,7 +158,7 @@ tv('pets.json').point().x('cat').y('dog').plot()
 
 ## Contributions
 
-Are welcome!
+Are welcome! Open an issue or create a pull request.
 
 ## Also See
 

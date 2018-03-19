@@ -1,8 +1,7 @@
 
 //print object to full depth
 const util = require('util');
-const prt = a =>
-  console.log(util.inspect(a, {showHidden: false, depth: null}));
+const prt = a => console.log(util.inspect(a, {showHidden: false, depth: null}));
 
 const tv = require('to-vega');
 
