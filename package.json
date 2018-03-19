@@ -1,6 +1,6 @@
 {
   "name": "to-vega",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Simple JavaScript library for creating Vega-Lite specifications.",
   "main": "dist/index.js",
   "scripts": {
@@ -19,5 +19,8 @@
   "devDependencies": {
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-uglify": "^3.0.0"
-  }
+  },
+  "files": [
+    "./dist/index.js"
+  ]
 }
