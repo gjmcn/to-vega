@@ -113,7 +113,7 @@ proto.end = function() {
 props.channel.forEach(a => proto[a] = function(fld, typ, ops) {
   let channel = {};
   if (fld !== undefined && fld !== null) {
-    channel.field = '' + fld;
+    channel.field = (typeof fld === 'number') ? '' + fld : fld;
     channel.type = expandType(typ || 'q');
   }
   else if (typ) channel.type = expandType(typ);  //if field omitted, no default type

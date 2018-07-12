@@ -117,7 +117,7 @@ A channel method can take up to 3 arguments:
 
 `tv.x(field, type, ops)`
 
-* `field`: field property, `field` is converted to a string; no field property is added if `field` is `undefined` or `null`
+* `field`: field property; no field property is added if `field` is `undefined` or `null`
 
 * `type`: type property
 	* `'n'`, `'o'`, `'q'`, or `'t'` can be passed instead of `'nominal'`, `'ordinal'`, `'quantitative'` or `'temporal'` respectively
