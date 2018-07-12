@@ -93,7 +93,7 @@ props.mark.forEach(a => proto[a] = function(ops) {
   return this;
 });
 proto.mark = function(m,ops) { 
-  if (props.mark.indexOf(m) === -1) throw new Error ('invalid mark');
+  if (!props.mark.includes(m)) throw new Error ('invalid mark');
   return this[m](ops);
 };
 
@@ -112,8 +112,8 @@ proto.end = function() {
 //channels
 props.channel.forEach(a => proto[a] = function(fld, typ, ops) {
   let channel = {};
-  if (fld) {
-    channel.field = fld;
+  if (fld !== undefined && fld !== null) {
+    channel.field = '' + fld;
     channel.type = expandType(typ || 'q');
   }
   else if (typ) channel.type = expandType(typ);  //if field omitted, no default type
@@ -123,7 +123,7 @@ props.channel.forEach(a => proto[a] = function(fld, typ, ops) {
   return this;
 });
 proto.channel = function(chn, fld, typ, ops) {
-  if (props.channel.indexOf(chn) === -1) throw new Error ('invalid channel');
+  if (!props.channel.includes(chn)) throw new Error ('invalid channel');
   return this[chn](fld, typ, ops);
 };
 

@@ -117,12 +117,11 @@ A channel method can take up to 3 arguments:
 
 `tv.x(field, type, ops)`
 
-* `field`: field property; no field property is added if this is falsy
+* `field`: field property, `field` is converted to a string; no field property is added if `field` is `undefined` or `null`
 
 * `type`: type property
 	* `'n'`, `'o'`, `'q'`, or `'t'` can be passed instead of `'nominal'`, `'ordinal'`, `'quantitative'` or `'temporal'` respectively
-	* `'q'` is used by default if `field` is truthy
-	* no type property is added if `field` and `type` are both falsy
+	* if `type` is falsy, the type property defaults to `'q'` if `field` is used; otherwise, the type property is not set
 
 * `ops`: object with any other properties to set, e.g.
 `{aggregate: 'sum', axis: {title: 'population}, stack: normalize}`
@@ -136,7 +135,7 @@ There is also a generic `channel` method. For example, `.channel('x','dogs','q',
 `setPlot` sets the `plot` method. For example, if the function `vegalite` plots a Vega-Lite spec, we could write:
 
 ```js
-tv.setPlot(function() {vegalite(this.spec)})
+tv.setPlot(function() {return vegalite(this.spec)})
 ```
 then write code such as:
 
