@@ -74,17 +74,17 @@ The following methods have slightly more complex behavior:
 
 ### Compose
 
-`hconcat`, `vconcat`, `level`
+`hconcat`, `vconcat`, `layer`
 
 These methods set the property of the same name (on the current object) to an array, add an empty object to the array and make it the current object.
 
 The `open` method is similar, but does not add an array: `open` sets the spec property (of the current object) to an empty object and makes it the current object.
 
-`hconcat`, `vconcat`, `level` and `open` take no arguments.
+`hconcat`, `vconcat`, `layer` and `open` take no arguments.
 
 Call `.end` to exit an array or object:
 
-* if inside a 'composition array' (created by `hconcat`, `vconcat` or `level`), `end` closes the current object (the array entry) and closes the array
+* if inside a 'composition array' (created by `hconcat`, `vconcat` or `layer`), `end` closes the current object (the array entry) and closes the array
 
 * if inside an inner spec object (created with `open`), `end` closes the object
 
