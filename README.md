@@ -54,7 +54,7 @@ In the docs below, the term 'current object' refers to the object that we are cu
 
 The following methods set the corresponding property of the current object:
 
-`description`, `title`, `width`, `height`, `name`, `transform`, `$schema`, `background`, `padding`, `autosize`, `config`, `selection`, `facet`, `repeat`
+`description`, `title`, `width`, `height`, `name`, `transform`, `$schema`, `background`, `padding`, `autosize`, `config`, `selection`, `facet`, `repeat`, `resolve`
 
 E.g. `tv().width(300)` or `tv().selection({brush: {type: 'interval'}})`
 
@@ -93,7 +93,7 @@ Call `.end` to exit an array or object:
 
 ### Marks
 
-`area`, `bar`, `circle`, `line`, `point`, `rect`, `rule`, `square`, `text`, `tick`, `geoshape`
+`area`, `bar`, `boxplot`, `circle`, `errorband`, `errorbar`, `geoshape`, `line`, `point`, `rect`, `rule`, `square`,`text`, `tick`, `trail`
 
 If the current object is the top-level object or an inner spec object (created with `open`), mark methods set the mark property.
 
@@ -107,7 +107,7 @@ Use `add` inside a composition array to add an empty object and make it the curr
 
 ### Channels
 
- `x`, `y`, `x2`, `y2`, `color`, `opacity`, `size`, `shape`, `label`, `tooltip`, `href`, `order`, `detail`, `row`, `column`
+`x`, `y`, `x2`, `y2`, `longitude`, `latitude`, `longitude2`, `latitude2`, `color`, `opacity`, `size`, `shape`, `label`, `tooltip`, `href`, `key`, `order`, `detail`, `row`, `column`
 
 These methods set properties (channels) of the encoding property of the current object &mdash; the encoding property is added if it does not exist (or is falsy).
 

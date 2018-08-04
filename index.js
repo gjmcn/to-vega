@@ -24,13 +24,15 @@ const tv = data => new tv_new(data);  //wrap constructor so 'new' not required
 
 //groups of method names
 const props = {
-  basic: ['description','title','width','height','name','transform', '$schema',
-    'background','padding','autosize','config','selection','facet','repeat'],
+  basic: ['description','title','width','height','name','transform',
+          '$schema','background','padding','autosize','config','selection',
+          'facet','repeat','resolve'],
   compose: ['layer','hconcat','vconcat'],
-  mark: ['area','bar','circle','line','point','rect','rule', 'square','text',
-    'tick','geoshape'],
-  channel: ['x','y','x2','y2','color','opacity','size','shape','label',
-    'tooltip','href','order','detail','row','column']
+  mark: ['area','bar','boxplot','circle','errorband','errorbar','geoshape',
+         'line','point','rect','rule', 'square','text','tick','trail'],
+  channel: ['x','y','x2','y2','longitude','latitude','longitude2','latitude2',
+            'color','opacity','size','shape','label','tooltip','href','key',
+            'order','detail','row','column']
 };
 
 //basic
