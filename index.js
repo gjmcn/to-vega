@@ -14,7 +14,7 @@ const last = ar => ar[ar.length - 1];
 
 //constructor
 const tv_new = function(data) {
-  this.spec = {$schema: 'https://vega.github.io/schema/vega-lite/v2.json'};
+  this.spec = {$schema: 'https://vega.github.io/schema/vega-lite/v3.json'};
   this._obj = this.spec;  //current object
   this._stack = [];       //currently open composition arrays and inner spec objects
   if (data) this.data(data);
