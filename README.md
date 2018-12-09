@@ -10,7 +10,7 @@ returns the object:
 
 ```js
 {
-  '$schema': 'https://vega.github.io/schema/vega-lite/v2.json',
+  '$schema': 'https://vega.github.io/schema/vega-lite/v3.json',
   data: { url: 'pets.json' },
   mark: 'point',
   encoding: {
