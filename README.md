@@ -1,5 +1,11 @@
 # To-Vega
 
+---
+
+**Note**: this project is no longer active. Please try its replacement: [Vizsla](https://github.com/gjmcn/vizsla).
+
+---
+
 **To-Vega** is a simple JavaScript library for creating [Vega-Lite](https://vega.github.io/vega-lite/) specifications. For example:
 
 ```js
